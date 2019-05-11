@@ -42,7 +42,7 @@ router.post("", (req, res, next) => {
     title: req.body.title,
     detail: req.body.detail
   });
-  post.save().then(charCreated => {
+  character.save().then(charCreated => {
     res.status(201).json({
       characterId: charCreated._id,
       message: "Character created!"
@@ -57,3 +57,5 @@ router.delete("/:id", (req, res, next) => {
     res.status(200).json({ message: "Character deleted!" });
   });
 });
+
+module.exports = router;
