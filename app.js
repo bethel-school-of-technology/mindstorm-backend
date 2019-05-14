@@ -3,6 +3,8 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const mongoose = require('mongoose');
 const characterRoutes = require('./routes/characters');
+const commentRoutes = require('./routes/comments');
+const storyRoutes = require('./routes/stories');
 
 const app = express();
 
@@ -25,15 +27,15 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader(
-        'Access-Control-Allow-Headers', 
-        'Origin, X-Request-With, Content-Type, Accept'
+      'Access-Control-Allow-Headers',
+      'Origin, X-Requested-With, Content-Type, Accept'
     );
     res.setHeader(
-        'Access-Control-Allow-Methods', 
-        'GET, POST, PUT, DELETE, OPTIONS'
+      'Access-Control-Allow-Methods',
+      'GET, POST, PATCH, PUT, DELETE, OPTIONS'
     );
     next();
-});
+  });
 
 // app.use('/api/characters', (req, res, next) => {
 //     const characters = [
@@ -46,6 +48,8 @@ app.use((req, res, next) => {
 //     });
 // });
 
-app.use('api/characters', characterRoutes);
+app.use('/api/characters', characterRoutes);
+// app.use('api/comments', commentRoutes);
+// app.use('api/stories', storyRoutes);
 
 module.exports = app;
