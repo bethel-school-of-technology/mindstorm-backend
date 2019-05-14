@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const mongoose = require('mongoose');
 const characterRoutes = require('./routes/characters');
+const commentRoutes = require('./routes/comments')
 
 const app = express();
 
@@ -10,7 +11,7 @@ const app = express();
 // MongoDB connection string
 const url = 'mongodb://storm:fullzap1@ds153096.mlab.com:53096/mindstorm'
 
-mongoose.connect (url)
+mongoose.connect(url)
     .then(() => {
         console.log('Database connection established!');
     })
@@ -25,11 +26,11 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader(
-        'Access-Control-Allow-Headers', 
+        'Access-Control-Allow-Headers',
         'Origin, X-Request-With, Content-Type, Accept'
     );
     res.setHeader(
-        'Access-Control-Allow-Methods', 
+        'Access-Control-Allow-Methods',
         'GET, POST, PUT, DELETE, OPTIONS'
     );
     next();
@@ -47,5 +48,7 @@ app.use((req, res, next) => {
 // });
 
 app.use('api/characters', characterRoutes);
+
+app.use("/api/comments", commentRoutes);
 
 module.exports = app;
