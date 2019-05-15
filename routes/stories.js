@@ -24,3 +24,26 @@ router.post("", (req, res, next) => {
         });
     });
 });
+
+router.get("/:id", (req, res, next) => {
+    Story.findById(req.params.id).then(story => {
+        if (story) {
+            res.status(200).json(story);
+        } else {
+            res.status(404).json({ 
+                message: "Story not found!"
+            });
+        }
+    });
+});
+
+router.delete("/:id", (req, res, next) => {
+    Story.deleteOne({ _id: req.params.id }).then(result => {
+        console.log(result);
+        res.status(200).json({
+            message: "Story removed!"
+        });
+    });
+});
+
+module.exports = router;
