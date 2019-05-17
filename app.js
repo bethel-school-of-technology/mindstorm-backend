@@ -38,7 +38,7 @@ app.use((req, res, next) => {
   });
 
 app.use("/api/characters", characterRoutes);
-app.use("api/comments", commentRoutes);
-app.use("api/stories", storyRoutes);
+// app.use("/api/comments", commentRoutes);
+app.use("/api/stories", storyRoutes);
 
 module.exports = app;

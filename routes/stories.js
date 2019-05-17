@@ -14,8 +14,8 @@ router.get("", (req, res, next) => {
 
 router.post("", (req, res, next) => {
     const story = new Story({
-        storytitle: req.body.storytitle,
-        storybody: req.body.storybody
+        storyTitle: req.body.storyTitle,
+        storyBody: req.body.storyBody
     });
     story.save().then(createdStory => {
         res.status(201).json({
@@ -35,6 +35,22 @@ router.get("/:id", (req, res, next) => {
             });
         }
     });
+});
+
+router.put("/:id", (req, res, next) => {
+    const story = new Story ({
+        _id: req.body.id,
+        storyTitle: req.body.storyTitle,
+        storyBody: req.body.storyBody
+    });
+    Story.updateOne({
+        _id: req.params.id
+    }, story)
+        .then(result => {
+            res.status(200).json({ 
+                message: "Story updated!" 
+            });
+        });
 });
 
 router.delete("/:id", (req, res, next) => {
