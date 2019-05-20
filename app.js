@@ -10,9 +10,11 @@ const app = express();
 
 
 // MongoDB connection string
-const url = "mongodb://storm:fullzap1@ds153096.mlab.com:53096/mindstorm"
+const db = "mongodb://storm:fullzap1@ds153096.mlab.com:53096/mindstorm"
 
-mongoose.connect (url)
+mongoose.connect (db, {
+  useNewUrlParser: true
+})
     .then(() => {
         console.log("Database connection established!");
     })
@@ -38,7 +40,7 @@ app.use((req, res, next) => {
   });
 
 app.use("/api/characters", characterRoutes);
-// app.use("/api/comments", commentRoutes);
+app.use("/api/comments", commentRoutes);
 app.use("/api/stories", storyRoutes);
 
 module.exports = app;

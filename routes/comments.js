@@ -27,8 +27,8 @@ router.get("/:id", (req, res, next) => {
 // POST a comment
 router.post("", (req, res, next) => {
   const comment = new Comment({
-    posttitle: req.body.posttitle,
-    postbody: req.body.postbody
+    postTitle: req.body.postTitle,
+    postBody: req.body.postBody
   });
   comment.save().then(commentCreated => {
     res.status(201).json({
@@ -42,8 +42,8 @@ router.post("", (req, res, next) => {
 router.put("/:id", (req, res, next) => {
   const comment = new Comment({
     _id: req.body.id,
-    posttitle: req.body.posttitle,
-    postbody: req.body.postbody
+    postTitle: req.body.postTitle,
+    postBody: req.body.postBody
   });
   Comment.updateOne({ _id: req.params.id }, comment).then(result => {
     res.status(200).json({ message: "Update successful!" });
