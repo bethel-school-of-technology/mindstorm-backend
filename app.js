@@ -8,11 +8,10 @@ const storyRoutes = require("./routes/stories");
 
 const app = express();
 
+// MongoDB connection variable, located in nodemon.json file.
+const db = process.env.MongoDB_PW;
 
-// MongoDB connection string
-const db = "mongodb://storm:fullzap1@ds153096.mlab.com:53096/mindstorm"
-
-mongoose.connect (db, {
+mongoose.connect(db, {
   useNewUrlParser: true
 })
     .then(() => {
@@ -42,5 +41,6 @@ app.use((req, res, next) => {
 app.use("/api/characters", characterRoutes);
 app.use("/api/comments", commentRoutes);
 app.use("/api/stories", storyRoutes);
+app.use("/api/user", userRoutes);
 
 module.exports = app;
