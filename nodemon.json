@@ -1,0 +1,5 @@
+{
+    "env": {
+        "MongoDB_PW": "mongodb://storm:fullzap1@ds153096.mlab.com:53096/mindstorm"
+    }
+}
