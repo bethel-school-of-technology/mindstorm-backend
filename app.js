@@ -5,6 +5,7 @@ const mongoose = require("mongoose");
 const characterRoutes = require("./routes/characters");
 const commentRoutes = require("./routes/comments");
 const storyRoutes = require("./routes/stories");
+const userRoutes = require("./routes/users");
 
 const app = express();
 
