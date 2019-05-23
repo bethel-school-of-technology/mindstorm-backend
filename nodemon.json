@@ -1,5 +1,6 @@
 {
     "env": {
-        "MongoDB_PW": "mongodb://storm:fullzap1@ds153096.mlab.com:53096/mindstorm"
+        "MongoDB_PW": "mongodb://storm:fullzap1@ds153096.mlab.com:53096/mindstorm",
+        "JWT_SECRET": "secret_259809842"
     }
 }
