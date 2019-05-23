@@ -1,5 +1,5 @@
 const express = require("express");
-const bcrypt = require("bcrypt");
+const bcryptjs = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 const User = require("../models/user");
@@ -7,7 +7,7 @@ const User = require("../models/user");
 const router = express.Router();
 
 router.post("/signup", (req, res, next) => {
-  bcrypt.hash(req.body.password, 10).then(hash => {
+  bcryptjs.hash(req.body.password, 10).then(hash => {
     const user = new User({
       email: req.body.email,
       password: hash
@@ -38,7 +38,7 @@ router.post("/login", (req, res, next) => {
         });
       }
       fetchedUser = user;
-      return bcrypt.compare(req.body.password, user.password);
+      return bcryptjs.compare(req.body.password, user.password);
     })
     .then(result => {
       if (!result) {
@@ -48,7 +48,7 @@ router.post("/login", (req, res, next) => {
       }
       const token = jwt.sign(
         { email: fetchedUser.email, userId: fetchedUser._id },
-        "secret_this_should_be_longer",
+        process.env.JWT_SECRET,
         { expiresIn: "1h" }
       );
       res.status(200).json({
