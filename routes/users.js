@@ -22,7 +22,7 @@ router.post("/signup", (req, res, next) => {
       })
       .catch(err => {
         res.status(500).json({
-          message: "User with this email already exist!"
+          message: "Sorry, this email already has an account here."
         });
       });
   });
@@ -34,7 +34,7 @@ router.post("/login", (req, res, next) => {
     .then(user => {
       if (!user) {
         return res.status(401).json({
-          message: "No such user!"
+          message: "Sorry, we couldn't find an account with that email."
         });
       }
       fetchedUser = user;
@@ -43,7 +43,7 @@ router.post("/login", (req, res, next) => {
     .then(result => {
       if (!result) {
         return res.status(401).json({
-          message: "Incorrect password!"
+          message: "Sorry, that password isn't right."
         });
       }
       const token = jwt.sign(
