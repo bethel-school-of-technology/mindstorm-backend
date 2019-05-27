@@ -1,60 +1,117 @@
 const express = require("express");
 const Comment = require("../models/comment");
+const checkUser = require("../middleware/check-user");
 
 const router = express.Router();
 
-// GET list of comments
+/**
+ * Performs the GET method for retrieving a comment.
+ */
 router.get("", (req, res, next) => {
   Comment.find().then(docs => {
     res.status(200).json({
       comments: docs,
-      message: "Comments were found!"
+      message: "Comments found!"
+    })
+    .catch(error => {
+      res.status(500).json({
+        message: "Fetching characters failed!"
+      });
     });
   });
 });
 
-// GET comment by id
+/**
+ * Performs the GET method for retrieving a comment by its id.
+ */
 router.get("/:id", (req, res, next) => {
-  Comment.findById(req.params.id).then(comment => {
-    if (comment) {
-      res.status(200).json(comment);
-    } else {
-      res.status(404).json({ message: "Comment not found!" });
-    }
-  });
+  Comment.findById(req.params.id)
+    .then(comment => {
+      if (comment) {
+        res.status(200).json(comment);
+      } else {
+        res.status(404).json({ message: "Comment not found!" });
+      }
+    })
+    .catch(error => {
+      res.status(500).json({
+        message: "Fetching comment failed!"
+      });
+    });
 });
 
-// POST a comment
-router.post("", (req, res, next) => {
+/**
+ * Performs the POST method for creating a comment and authorizes user.
+ */
+router.post("", checkUser, (req, res, next) => {
   const comment = new Comment({
     postTitle: req.body.postTitle,
-    postBody: req.body.postBody
+    postBody: req.body.postBody,
+    creator: res.userData.userId
   });
-  comment.save().then(commentCreated => {
-    res.status(201).json({
-      commentId: commentCreated._id,
-      message: "Comment created!"
+  comment
+    .save()
+    .then(commentCreated => {
+      res.status(201).json({
+        comment: {
+          ...commentCreated,
+          commentId: commentCreated._id,
+          message: "Comment created!"
+        }
+      });
+  })
+  .catch(error => {
+    res.status(500).json({
+      message: "Creating a comment failed!"
     });
   });
 });
 
-// PUT a comment
-router.put("/:id", (req, res, next) => {
+/**
+ * Performs the PUT method for editing a comment and authorizes user.
+ */
+router.put("/:id", checkUser, (req, res, next) => {
   const comment = new Comment({
     _id: req.body.id,
     postTitle: req.body.postTitle,
-    postBody: req.body.postBody
+    postBody: req.body.postBody,
+    creator: req.userData.userId
   });
-  Comment.updateOne({ _id: req.params.id }, comment).then(result => {
-    res.status(200).json({ message: "Update successful!" });
+  Comment.updateOne(
+    { _id: req.params.id, creator: req.userData.userId }, 
+    comment
+  )
+    .then(result => {
+      if (result.nModified > 0) {
+        res.status(200).json({ message: "Update successful!" });
+      } else {
+        res.status(401).json({ message: "You're not the creator!"})
+      }
+  })
+  .catch(error => {
+    res.status(500).json({
+      message: "Couldn't update comment!"
+    });
   });
 });
 
-// Delete method
-router.delete("/:id", (req, res, next) => {
-  Comment.deleteOne({ _id: req.params.id }).then(result => {
-    console.log(result);
-    res.status(200).json({ message: "Comment deleted!" });
+/**
+ * Performs a DELETE method for deleting a comment by its id and authorizes user.
+ */
+router.delete("/:id", checkUser, (req, res, next) => {
+  Comment.deleteOne({ _id: req.params.id })
+    .then(result => {
+      console.log(result);
+      if (result.n > 0) {
+        res.status(200).json({ message: "Comment deleted!" });
+      } else {
+        res.status(401).json({ message: "You're not the creator!"})
+      }
+  })
+  .catch(error => {
+    res.status(500).json({
+      message: "Fetching characters failed!"
+    });
   });
 });
 
