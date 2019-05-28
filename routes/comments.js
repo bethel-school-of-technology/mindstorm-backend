@@ -99,7 +99,7 @@ router.put("/:id", checkUser, (req, res, next) => {
  * Performs a DELETE method for deleting a comment by its id and authorizes user.
  */
 router.delete("/:id", checkUser, (req, res, next) => {
-  Comment.deleteOne({ _id: req.params.id })
+  Comment.deleteOne({ _id: req.params.id, creator: req.userData.userId })
     .then(result => {
       console.log(result);
       if (result.n > 0) {

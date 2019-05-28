@@ -101,7 +101,7 @@ router.post("", checkUser, (req, res, next) => {
  * Performs a DELETE method for deleting a character trait by its id and authorizes user
  */
 router.delete("/:id", checkUser, (req, res, next) => {
-  Character.deleteOne({ _id: req.params.id })
+  Character.deleteOne({ _id: req.params.id , creator: req.userData.userId})
     .then(result => {
       console.log(result);
       if (result.n > 0) {

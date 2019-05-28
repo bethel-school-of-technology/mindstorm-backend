@@ -1,5 +1,6 @@
 const express = require("express");
 const Story = require("../models/story")
+const checkUser = require("../middleware/check-user");
 
 const router = express.Router();
 
@@ -15,7 +16,8 @@ router.get("", (req, res, next) => {
 router.post("", (req, res, next) => {
     const story = new Story({
         storyTitle: req.body.storyTitle,
-        storyBody: req.body.storyBody
+        storyBody: req.body.storyBody,
+        creator: res.userData.userId
     });
     story.save().then(createdStory => {
         res.status(201).json({
@@ -44,7 +46,8 @@ router.put("/:id", (req, res, next) => {
         storyBody: req.body.storyBody
     });
     Story.updateOne({
-        _id: req.params.id
+        _id: req.params.id,
+        creator: req.userData.userId
     }, story)
         .then(result => {
             res.status(200).json({ 
@@ -54,7 +57,7 @@ router.put("/:id", (req, res, next) => {
 });
 
 router.delete("/:id", (req, res, next) => {
-    Story.deleteOne({ _id: req.params.id }).then(result => {
+    Story.deleteOne({ _id: req.params.id, creator: req.userData.userId }).then(result => {
         console.log(result);
         res.status(200).json({
             message: "Story removed!"
