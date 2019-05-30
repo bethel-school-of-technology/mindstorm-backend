@@ -1,6 +1,7 @@
 const express = require("express");
 const Character = require("../models/character");
 const checkUser = require("../middleware/check-user");
+const User = require("../models/user");
 
 const router = express.Router();
 
@@ -19,7 +20,7 @@ router.put("/:id", checkUser, (req, res, next) => {
     character
   )
     .then(result => {
-      if (result.nModified > 0) {
+      if (result.n > 0) {
         res.status(200).json({ message: "Update successful!" });
       } else {
         res.status(401).json({ message: "Not the creator!" });
@@ -35,20 +36,20 @@ router.put("/:id", checkUser, (req, res, next) => {
 /**
  * Performs the GET method for retrieving a character trait
  */
-router.get("", (req, res, next) => {
-  Character.find().then(docs => {
-    res
-      .status(200)
-      .json({
-        characters: docs,
-        message: "Characters United!"
+router.get("", checkUser, (req, res, next) => {
+    Character.find().then(docs => {
+      res
+        .status(200)
+        .json({
+          characters: docs,
+          message: "Characters United!"
+        })
       })
-    })
-    .catch(error => {
-      res.status(500).json({
-        message: "Fetching characters failed!"
+      .catch(error => {
+        res.status(500).json({
+          message: "Fetching characters failed!"
+      });
     });
-  });
 });
 
 /**

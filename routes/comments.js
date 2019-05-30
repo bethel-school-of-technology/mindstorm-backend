@@ -13,10 +13,10 @@ router.get("", (req, res, next) => {
       comments: docs,
       message: "Comments found!"
     })
-    .catch(error => {
-      res.status(500).json({
-        message: "Fetching characters failed!"
-      });
+  })
+  .catch(error => {
+    res.status(500).json({
+      message: "Fetching characters failed!"
     });
   });
 });
@@ -47,7 +47,7 @@ router.post("", checkUser, (req, res, next) => {
   const comment = new Comment({
     postTitle: req.body.postTitle,
     postBody: req.body.postBody,
-    creator: res.userData.userId
+    creator: req.userData.userId
   });
   comment
     .save()
@@ -82,7 +82,7 @@ router.put("/:id", checkUser, (req, res, next) => {
     comment
   )
     .then(result => {
-      if (result.nModified > 0) {
+      if (result.n > 0) {
         res.status(200).json({ message: "Update successful!" });
       } else {
         res.status(401).json({ message: "You're not the creator!"})
