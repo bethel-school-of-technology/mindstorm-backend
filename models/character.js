@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 
+// Comment schema model
 const characterSchema = mongoose.Schema({
   title: { type: String, required: true },
   detail: { type: String, required: false },

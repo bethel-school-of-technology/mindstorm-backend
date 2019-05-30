@@ -1,8 +1,6 @@
 const mongoose = require("mongoose");
 
-/**
- * Story Schema model.
- */
+// Story schema model
 const storySchema = mongoose.Schema({
   storyTitle: { type: String, required: true },
   storyBody: { type: String, required: false },
