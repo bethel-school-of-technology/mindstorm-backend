@@ -10,7 +10,7 @@ router.post("/signup", (req, res, next) => {
   bcryptjs.hash(req.body.password, 10).then(hash => {
     const user = new User({
       email: req.body.email,
-       password: hash
+      password: hash
     });
     user
       .save()
@@ -22,7 +22,7 @@ router.post("/signup", (req, res, next) => {
       })
       .catch(err => {
         res.status(500).json({
-          message: "Sorry, this email already has an account here."
+          message: "You already have an account here with such email!"
         });
       });
   });
@@ -34,7 +34,7 @@ router.post("/login", (req, res, next) => {
     .then(user => {
       if (!user) {
         return res.status(401).json({
-          message: "Sorry, we couldn't find an account with that email."
+          message: "Either password or email isn't right. Or both."
         });
       }
       fetchedUser = user;
@@ -43,7 +43,7 @@ router.post("/login", (req, res, next) => {
     .then(result => {
       if (!result) {
         return res.status(401).json({
-          message: "Sorry, that password isn't right."
+          message: "Either password or email isn't right. Or both."
         });
       }
       const token = jwt.sign(
@@ -58,7 +58,7 @@ router.post("/login", (req, res, next) => {
     })
     .catch(err => {
       return res.status(401).json({
-        message: "Invalid authentication credentials!"
+        message: "Either password or email isn't right. Or both."
       });
     });
 });
