@@ -1,8 +1,6 @@
 const mongoose = require("mongoose");
 
-/**
- * Comment Schema model.
- */
+// Comment schema model
 const commentSchema = mongoose.Schema({
   postTitle: { type: String, required: true },
   postBody: { type: String, required: true },

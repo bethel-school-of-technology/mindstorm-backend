@@ -43,11 +43,11 @@ router.get("", (req, res, next) => {
         characters: docs,
         message: "Characters United!"
       })
-      .catch(error => {
-        res.status(500).json({
-          message: "Fetching characters failed!"
-        });
-      });
+    })
+    .catch(error => {
+      res.status(500).json({
+        message: "Fetching characters failed!"
+    });
   });
 });
 
