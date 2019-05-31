@@ -13,14 +13,13 @@ router.post("", checkUser, (req, res, next) => {
     storyBody: req.body.storyBody,
     creator: req.userData.userId
   });
-  story
-    .save()
+  story.save()
     .then(createdStory => {
       res.status(201).json({
+        message: "Story added!",
         story: {
           ...createdStory,
-          storyId: createdStory._id,
-          message: "Story added!"
+          id: createdStory._id
         }
       });
     })
@@ -66,12 +65,26 @@ router.put("/:id", checkUser, (req, res, next) => {
  * Performs the GET method for retrieving a stories
  */
 router.get("", (req, res, next) => {
-  Story.find().then(docs => {
+  const pageSize = +req.query.pagesize;
+  const currentPage = +req.query.page;
+  const storyQuery = Story.find();
+  let fetchedStories;
+  if (pageSize && currentPage) {
+    storyQuery
+      .skip(pageSize * (currentPage - 1))
+      .limit(pageSize);
+  }
+  storyQuery.then(docs => {
+    fetchedStories = docs
+    return Story.count();
+  })
+  .then(count => {
     res.status(200).json({
       message: "Stories Retrieved!",
-        stories: docs
-      });
-    })
+      stories: fetchedStories,
+      maxStories: count
+    });
+  })
     .catch(error => {
       res.status(500).json({
         message: "Fetching stories failed!"
