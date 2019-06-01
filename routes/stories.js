@@ -4,9 +4,7 @@ const checkUser = require("../middleware/check-user");
 
 const router = express.Router();
 
-/**
- * Performs the POST method for creating a story and authorizes user
- */
+// Performs a POST method for creating a story and authorizes user
 router.post("", checkUser, (req, res, next) => {
   const story = new Story({
     storyTitle: req.body.storyTitle,
@@ -30,9 +28,7 @@ router.post("", checkUser, (req, res, next) => {
     });
 });
 
-/**
- * Performs the PUT method for editing a story and authorizes user
- */
+// Performs a PUT method for editing a story and authorizes user
 router.put("/:id", checkUser, (req, res, next) => {
   const story = new Story({
     _id: req.body.id,
@@ -61,9 +57,7 @@ router.put("/:id", checkUser, (req, res, next) => {
     });
 });
 
-/**
- * Performs the GET method for retrieving a stories
- */
+// Performs a GET method for retrieving stories
 router.get("", (req, res, next) => {
   const pageSize = +req.query.pagesize;
   const currentPage = +req.query.page;
@@ -76,7 +70,7 @@ router.get("", (req, res, next) => {
   }
   storyQuery.then(docs => {
     fetchedStories = docs
-    return Story.count();
+    return Story.countDocuments();
   })
   .then(count => {
     res.status(200).json({
@@ -92,9 +86,8 @@ router.get("", (req, res, next) => {
     });
 });
 
-/**
- * Performs the GET method for retrieving a story by its id
- */
+
+// Performs a GET method for retrieving a story by its id
 router.get("/:id", (req, res, next) => {
   Story.findById(req.params.id)
     .then(story => {
@@ -113,9 +106,7 @@ router.get("/:id", (req, res, next) => {
     });
 });
 
-/**
- * Performs a DELETE method for deleting a story by its id and authorizes user
- */
+// Performs a DELETE method for deleting a story by its id and authorizes user
 router.delete("/:id", checkUser, (req, res, next) => {
   Story.deleteOne({ _id: req.params.id, creator: req.userData.userId })
     .then(result => {
