@@ -1,7 +1,6 @@
 const express = require("express");
 const Character = require("../models/character");
 const checkUser = require("../middleware/check-user");
-const User = require("../models/user");
 
 const router = express.Router();
 
@@ -16,7 +15,10 @@ router.put("/:id", checkUser, (req, res, next) => {
     creator: req.userData.userId
   });
   Character.updateOne(
-    { _id: req.params.id, creator: req.userData.userId },
+    { 
+      _id: req.params.id, 
+      creator: req.userData.userId 
+    },
     character
   )
     .then(result => {
@@ -37,14 +39,26 @@ router.put("/:id", checkUser, (req, res, next) => {
  * Performs the GET method for retrieving a character trait
  */
 router.get("", checkUser, (req, res, next) => {
-    Character.find().then(docs => {
-      res
-        .status(200)
-        .json({
-          characters: docs,
-          message: "Characters United!"
-        })
-      })
+  const pageSize = +req.query.pagesize;
+  const currentPage = +req.query.page;
+  const characterQuery = Character.find();
+  let fetchedCharacters;
+  if (pageSize && currentPage) {
+    characterQuery
+      .skip(pageSize * (currentPage - 1))
+      .limit(pageSize);
+  }
+  characterQuery.then(docs => {
+    fetchedCharacters = docs
+    return Character.countDocuments();
+  })
+  .then(count => {
+    res.status(200).json({
+      message: "Characters Retrieved!",
+      characters: fetchedCharacters,
+      maxCharacters: count
+      });
+    })
       .catch(error => {
         res.status(500).json({
           message: "Fetching characters failed!"
@@ -80,14 +94,13 @@ router.post("", checkUser, (req, res, next) => {
     detail: req.body.detail,
     creator: req.userData.userId
   });
-  character
-    .save()
+  character.save()
     .then(charCreated => {
       res.status(201).json({
+        message: "Character created!",
         character: {
           ...charCreated,
-          characterId: charCreated._id,
-          message: "Character created!"
+          id: charCreated._id,
         }
       });
     })
