@@ -5,12 +5,14 @@ const checkUser = require("../middleware/check-user");
 
 const router = express.Router();
 
+// Images file types
 const MIME_TYPE_MAP = {
   'image/png': 'png',
   'image/jpeg': 'jpg',
   'image/jpg': 'jpg'
 };
 
+// Specifies image storage and file type validation
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     const isValid = MIME_TYPE_MAP[file.mimetype];
@@ -30,7 +32,9 @@ const storage = multer.diskStorage({
   }
 });
 
-// Performs a POST method for creating a story, uploading an image, and authorizes user
+// @route   POST api/stories
+// @desc    Create stories
+// @access  Private
 router.post(
   "", 
   checkUser, 
@@ -60,7 +64,9 @@ router.post(
       });
 });
 
-// Performs a PUT method for editing a story and authorizes user
+// @route   PUT api/stories/:id
+// @desc    Edit stories
+// @access  Private
 router.put(
   "/:id", 
   checkUser, 
@@ -100,7 +106,9 @@ router.put(
       });
 });
 
-// Performs a GET method for retrieving stories
+// @route   GET api/stories
+// @desc    Get stories
+// @access  Public
 router.get("", (req, res, next) => {
   const pageSize = +req.query.pagesize;
   const currentPage = +req.query.page;
@@ -129,9 +137,10 @@ router.get("", (req, res, next) => {
     });
 });
 
-
-// Performs a GET method for retrieving a story by its id
-router.get("/:id", (req, res, next) => {
+// @route   GET api/stories/:id
+// @desc    Get story
+// @access  Private
+router.get("/:id", checkUser, (req, res, next) => {
   Story.findById(req.params.id)
     .then(story => {
       if (story) {
@@ -149,7 +158,9 @@ router.get("/:id", (req, res, next) => {
     });
 });
 
-// Performs a DELETE method for deleting a story by its id and authorizes user
+// @route   DELETE api/stories/:id
+// @desc    Delete stories
+// @access  Private
 router.delete("/:id", checkUser, (req, res, next) => {
   Story.deleteOne({ _id: req.params.id, creator: req.userData.userId })
     .then(result => {

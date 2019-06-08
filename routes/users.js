@@ -6,6 +6,9 @@ const User = require("../models/user");
 
 const router = express.Router();
 
+// @route   POST api/user/signup
+// @desc    Signup user
+// @access  Public
 router.post("/signup", (req, res, next) => {
   bcryptjs.hash(req.body.password, 10).then(hash => {
     const user = new User({
@@ -28,6 +31,9 @@ router.post("/signup", (req, res, next) => {
   });
 });
 
+// @route   POST api/user/login
+// @desc    Login user
+// @access  Public
 router.post("/login", (req, res, next) => {
   let fetchedUser;
   User.findOne({ email: req.body.email })
