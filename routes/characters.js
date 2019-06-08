@@ -4,9 +4,9 @@ const checkUser = require("../middleware/check-user");
 
 const router = express.Router();
 
-/**
- * Performs the PUT method for editing a character trait and authorizes user
- */
+// @route   PUT api/characters/:id
+// @desc    Edit character
+// @access  Private
 router.put("/:id", checkUser, (req, res, next) => {
   const character = new Character({
     _id: req.body.id,
@@ -35,9 +35,9 @@ router.put("/:id", checkUser, (req, res, next) => {
     });
 });
 
-/**
- * Performs the GET method for retrieving a character trait
- */
+// @route   GET api/characters
+// @desc    Get characters
+// @access  Private
 router.get("", checkUser, (req, res, next) => {
   const pageSize = +req.query.pagesize;
   const currentPage = +req.query.page;
@@ -66,10 +66,10 @@ router.get("", checkUser, (req, res, next) => {
     });
 });
 
-/**
- * Performs the GET method for retrieving a character trait by its id
- */
-router.get("/:id", (req, res, next) => {
+// @route   GET api/characters/:id
+// @desc    Get a character by id
+// @access  Private
+router.get("/:id", checkUser, (req, res, next) => {
   Character.findById(req.params.id)
     .then(character => {
       if (character) {
@@ -85,9 +85,9 @@ router.get("/:id", (req, res, next) => {
     });
 });
 
-/**
- * Performs the POST method for creating a character traits and authorizes user
- */
+// @route   GET api/characters
+// @desc    Create characters
+// @access  Private
 router.post("", checkUser, (req, res, next) => {
   const character = new Character({
     title: req.body.title,
@@ -111,9 +111,9 @@ router.post("", checkUser, (req, res, next) => {
     });
 });
 
-/**
- * Performs a DELETE method for deleting a character trait by its id and authorizes user
- */
+// @route   DELETE api/characters/:id
+// @desc    Delete character
+// @access  Private
 router.delete("/:id", checkUser, (req, res, next) => {
   Character.deleteOne({ _id: req.params.id , creator: req.userData.userId})
     .then(result => {

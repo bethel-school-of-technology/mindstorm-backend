@@ -2,6 +2,7 @@ const http = require('http');
 const debug = require('debug')('node-angular');
 const app = require('./app');
 
+// Server.js sets up port to localhost:3000
 const normalizePort = val => {
     var port = parseInt(val, 10);
   
@@ -43,7 +44,6 @@ const normalizePort = val => {
     debug('Listening on ' + bind);
   };
   
-  // const port indicates the server port: localhost:3000
   const port = normalizePort(process.env.PORT || '3000');
   app.set('port', port);
   

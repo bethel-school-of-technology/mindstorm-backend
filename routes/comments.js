@@ -4,9 +4,9 @@ const checkUser = require("../middleware/check-user");
 
 const router = express.Router();
 
-/**
- * Performs the GET method for retrieving a comment.
- */
+// @route   GET api/comments
+// @desc    Get comments
+// @access  Public
 router.get("", (req, res, next) => {
   Comment.find().then(docs => {
     res.status(200).json({
@@ -21,10 +21,10 @@ router.get("", (req, res, next) => {
   });
 });
 
-/**
- * Performs the GET method for retrieving a comment by its id.
- */
-router.get("/:id", (req, res, next) => {
+// @route   GET api/comments/:id
+// @desc    Get comment
+// @access  Private
+router.get("/:id", checkUser, (req, res, next) => {
   Comment.findById(req.params.id)
     .then(comment => {
       if (comment) {
@@ -40,9 +40,9 @@ router.get("/:id", (req, res, next) => {
     });
 });
 
-/**
- * Performs the POST method for creating a comment and authorizes user.
- */
+// @route   POST api/comments
+// @desc    Create comments
+// @access  Private
 router.post("", checkUser, (req, res, next) => {
   const comment = new Comment({
     postTitle: req.body.postTitle,
@@ -67,9 +67,9 @@ router.post("", checkUser, (req, res, next) => {
   });
 });
 
-/**
- * Performs the PUT method for editing a comment and authorizes user.
- */
+// @route   PUT api/comments/:id
+// @desc    Edit comments
+// @access  Private
 router.put("/:id", checkUser, (req, res, next) => {
   const comment = new Comment({
     _id: req.body.id,
@@ -95,9 +95,9 @@ router.put("/:id", checkUser, (req, res, next) => {
   });
 });
 
-/**
- * Performs a DELETE method for deleting a comment by its id and authorizes user.
- */
+// @route   DELETE api/comments/:id
+// @desc    Delete comments
+// @access  Private
 router.delete("/:id", checkUser, (req, res, next) => {
   Comment.deleteOne({ _id: req.params.id, creator: req.userData.userId })
     .then(result => {
