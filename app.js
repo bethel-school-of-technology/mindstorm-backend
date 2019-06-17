@@ -2,50 +2,56 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
 const mongoose = require('mongoose');
+
 const characterRoutes = require('./routes/characters');
+const commentRoutes = require('./routes/comments');
+const storyRoutes = require('./routes/stories');
+const userRoutes = require('./routes/users');
 
 const app = express();
 
+// MongoDB connection variable, located in an external file
+const db = process.env.MongoDB_PW;
 
-// MongoDB connection string
-const url = 'mongodb://storm:fullzap1@ds153096.mlab.com:53096/mindstorm'
+// Connects to MongoDB
+mongoose
+  .connect(db, {
+    useNewUrlParser: true
+  })
+  .then(() => {
+    console.log('Database connection established!');
+  })
+  .catch(() => {
+    console.log('Error! No database connection!');
+  });
 
-mongoose.connect (url)
-    .then(() => {
-        console.log('Database connection established!');
-    })
-    .catch(() => {
-        console.log('Error! No database connection!');
-    });
+// Removes depreciation error for ensureIndex
+mongoose.set('useCreateIndex', true);
 
+// Body parser middleware
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+//Sets static folder for images
+app.use('/images', express.static(path.join('images')));
 
-// CORS - Cross-Origin Resource Sharing. This helps to expose the api to the client.
+// CORS - Cross-Origin Resource Sharing. Helps to expose the api to the client.
 app.use((req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader(
-        'Access-Control-Allow-Headers', 
-        'Origin, X-Request-With, Content-Type, Accept'
-    );
-    res.setHeader(
-        'Access-Control-Allow-Methods', 
-        'GET, POST, PUT, DELETE, OPTIONS'
-    );
-    next();
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader(
+    'Access-Control-Allow-Headers',
+    'Origin, X-Requested-With, Content-Type, Accept, Authorization'
+  );
+  res.setHeader(
+    'Access-Control-Allow-Methods',
+    'GET, POST, PATCH, PUT, DELETE, OPTIONS'
+  );
+  next();
 });
 
-// app.use('/api/characters', (req, res, next) => {
-//     const characters = [
-//         { id: 'wkekaakd', title: 'Name', detail: 'Jorg' },
-//         { id: 'wkefaj', title: 'Age', detail: '101 earth years' }
-//     ];
-//     res.status(200).json({
-//         message: 'Characters fetched!',
-//         characters: characters
-//     });
-// });
-
-app.use('api/characters', characterRoutes);
+// Api routes
+app.use('/api/characters', characterRoutes);
+app.use('/api/comments', commentRoutes);
+app.use('/api/stories', storyRoutes);
+app.use('/api/user', userRoutes);
 
 module.exports = app;
